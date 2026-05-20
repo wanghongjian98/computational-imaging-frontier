@@ -3,35 +3,45 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>计算成像前沿论文图谱</title>
+    <title>计算成像前沿论文雷达</title>
     <meta
       name="description"
-      content="筛选、总结和整理计算成像前沿研究的 GitHub Pages 静态站点。"
+      content="面向计算成像研究的论文筛选、摘要、评分和跟进队列。"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <p class="eyebrow">Computational Imaging Frontier</p>
-        <h1>计算成像前沿论文图谱</h1>
-      </div>
+      <a class="brand" href="#">
+        <span>CI</span>
+        <div>
+          <strong>计算成像论文雷达</strong>
+          <small>Computational Imaging Frontier</small>
+        </div>
+      </a>
       <nav aria-label="主要导航">
         <a href="#papers">论文库</a>
-        <a href="#taxonomy">方向图谱</a>
-        <a href="#workflow">整理流程</a>
+        <a href="#frontier">前沿路线</a>
+        <a href="#queue">跟进队列</a>
+        <a href="#rubric">评分规则</a>
       </nav>
     </header>
 
     <main>
-      <section class="intro">
-        <div class="intro-copy">
-          <h2>把论文从“读过”变成“可检索的研究判断”</h2>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Research Curation</p>
+          <h1>把计算成像论文整理成可检索、可比较、可跟进的研究地图</h1>
           <p>
-            这个站点用于持续整理计算成像论文：按任务、模态、方法、硬件和成熟度筛选，
-            并记录每篇论文的核心贡献、局限、复现难度和跟进价值。
+            聚焦 lensless imaging、diffusion priors、neural fields、computational
+            microscopy、event cameras 和 raw computational photography。每篇论文记录问题、贡献、局限、复现成本和下一步价值。
           </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#papers">浏览论文库</a>
+            <a class="secondary-link" href="papers.json" target="_blank" rel="noreferrer">查看数据文件</a>
+          </div>
         </div>
+
         <div class="metrics" aria-label="论文统计">
           <div>
             <strong id="paperCount">0</strong>
@@ -45,14 +55,29 @@
             <strong id="highValueCount">0</strong>
             <span>高优先级</span>
           </div>
+          <div>
+            <strong id="codeCount">0</strong>
+            <span>可复现代码</span>
+          </div>
         </div>
+      </section>
+
+      <section id="frontier" class="frontier band">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Frontier Lanes</p>
+            <h2>当前值得持续跟踪的方向</h2>
+          </div>
+          <span id="lastUpdated">更新中</span>
+        </div>
+        <div id="frontierLanes" class="frontier-lanes"></div>
       </section>
 
       <section id="papers" class="workspace">
         <aside class="filters" aria-label="筛选论文">
           <div class="filter-block">
             <label for="search">搜索</label>
-            <input id="search" type="search" placeholder="标题、作者、关键词..." />
+            <input id="search" type="search" placeholder="标题、作者、关键词、任务..." />
           </div>
 
           <div class="filter-block">
@@ -66,6 +91,13 @@
             <label for="modalityFilter">成像模态</label>
             <select id="modalityFilter">
               <option value="">全部模态</option>
+            </select>
+          </div>
+
+          <div class="filter-block">
+            <label for="stageFilter">阅读状态</label>
+            <select id="stageFilter">
+              <option value="">全部状态</option>
             </select>
           </div>
 
@@ -92,6 +124,11 @@
             <output id="scoreOutput" for="scoreFilter">0</output>
           </div>
 
+          <label class="checkbox">
+            <input id="codeOnly" type="checkbox" />
+            只看有代码的论文
+          </label>
+
           <button id="resetFilters" type="button">重置筛选</button>
         </aside>
 
@@ -107,18 +144,61 @@
         </section>
       </section>
 
+      <section id="queue" class="band">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Reading Queue</p>
+            <h2>优先跟进队列</h2>
+          </div>
+          <span>按综合评分和复现价值自动生成</span>
+        </div>
+        <div id="queueList" class="queue-list"></div>
+      </section>
+
       <section id="taxonomy" class="band">
         <div class="section-head">
-          <p class="eyebrow">Research Map</p>
-          <h2>方向图谱</h2>
+          <div>
+            <p class="eyebrow">Research Map</p>
+            <h2>方向图谱</h2>
+          </div>
+          <span>用于发现主题空白和可写综述方向</span>
         </div>
         <div id="topicMap" class="topic-map"></div>
       </section>
 
+      <section id="rubric" class="band">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Scoring Rubric</p>
+            <h2>评分规则</h2>
+          </div>
+        </div>
+        <div class="rubric-grid">
+          <article>
+            <strong>Novelty 30%</strong>
+            <p>是否提出新的成像模型、硬件编码、先验或求解范式。</p>
+          </article>
+          <article>
+            <strong>Impact 25%</strong>
+            <p>是否改变研究路线，或成为后续论文反复引用的基线。</p>
+          </article>
+          <article>
+            <strong>Fit 25%</strong>
+            <p>是否贴近计算成像主线：物理模型、传感器、逆问题和可验证实验。</p>
+          </article>
+          <article>
+            <strong>Reproducibility 20%</strong>
+            <p>是否有代码、数据、标定细节和足够清楚的实验设置。</p>
+          </article>
+        </div>
+      </section>
+
       <section id="workflow" class="band workflow">
         <div class="section-head">
-          <p class="eyebrow">Curation Workflow</p>
-          <h2>论文整理流程</h2>
+          <div>
+            <p class="eyebrow">Curation Workflow</p>
+            <h2>维护流程</h2>
+          </div>
         </div>
         <ol>
           <li>
@@ -142,7 +222,7 @@
     </main>
 
     <footer>
-      <p>维护建议：每周更新 3-5 篇论文，每月做一次方向综述。</p>
+      <p>Maintained as a public research notebook. 数据文件：<a href="papers.json">papers.json</a></p>
     </footer>
 
     <script src="app.js"></script>

@@ -73,6 +73,31 @@ http://127.0.0.1:8000
 - `code`: 是否有代码和代码链接
 - `url`: 论文链接
 - `updated`: 条目更新时间
+- `topCitedRank`: CVPR/ECCV/ICCV 高引用榜单名次，仅高引用榜单条目使用
+- `citationCount`: Semantic Scholar 抓取时的引用数，仅高引用榜单条目使用
+- `citationSource`: 引用数据来源
+- `citationRetrieved`: 引用数据抓取日期
+
+## CVPR/ECCV/ICCV 高引用 100 篇
+
+`papers.json` 中包含一组 `status` 为 `CV 顶会高引 Top 100` 的条目。
+
+生成逻辑：
+
+1. 使用 Semantic Scholar Academic Graph API。
+2. 检索 `CVPR`、`ICCV`、`ECCV` 三个 venue。
+3. 年份范围按 `2016-2025` 处理。
+4. 按 `citationCount` 排序后取前 100。
+5. 抓取日期：`2026-05-20`。
+
+可复现脚本：
+
+```powershell
+node tools/fetch_cv_top100.mjs
+node tools/merge_cv_top100.mjs
+```
+
+注意：引用数会随时间变化，不应理解为论文质量判断。
 
 ## 推荐维护节奏
 

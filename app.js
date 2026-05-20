@@ -7,7 +7,7 @@ const state = {
     stage: "",
     year: "",
     codeOnly: false,
-    sortBy: "priority",
+    sortBy: "citations",
   },
 };
 
@@ -76,6 +76,17 @@ function priorityRank(paper) {
   return { High: 3, Medium: 2, Low: 1 }[paper.priority] ?? 0;
 }
 
+function citationCount(paper) {
+  return Number(paper.citationCount ?? -1);
+}
+
+function citationLabel(paper) {
+  const count = citationCount(paper);
+  if (count < 0) return "";
+  const source = paper.citationSource ? ` ${paper.citationSource}` : "";
+  return ` · 引用 ${count.toLocaleString("en-US")}${source}`;
+}
+
 function matchesPaper(paper) {
   const haystack = [
     paper.title,
@@ -92,6 +103,8 @@ function matchesPaper(paper) {
     paper.insight,
     paper.whyFollow,
     paper.openQuestion,
+    paper.citationCount,
+    paper.citationSource,
     ...(paper.tags ?? []),
   ]
     .join(" ")
@@ -110,6 +123,9 @@ function matchesPaper(paper) {
 function sortPapers(papers) {
   const key = state.filters.sortBy;
   return [...papers].sort((a, b) => {
+    if (key === "citations") {
+      return citationCount(b) - citationCount(a) || priorityRank(b) - priorityRank(a) || b.year - a.year;
+    }
     if (key === "year") return b.year - a.year || priorityRank(b) - priorityRank(a);
     if (key === "code") {
       return Number(hasCode(b)) - Number(hasCode(a)) || b.year - a.year;
@@ -129,10 +145,11 @@ function paperCard(paper) {
   const card = document.createElement("article");
   card.className = "paper-card";
   const tags = [
+    paper.topCitedRank ? badge(`Top #${paper.topCitedRank}`, "hot") : "",
     badge(paper.status ?? "未分类", "status"),
     badge(paper.priority ?? "Medium", paper.priority === "High" ? "hot" : ""),
     ...(paper.tags ?? []).map((tag) => badge(tag)),
-  ].join("");
+  ].filter(Boolean).join("");
   const paperLink = paper.url
     ? `<a href="${escapeHtml(paper.url)}" target="_blank" rel="noreferrer">论文</a>`
     : "<span>待补论文链接</span>";
@@ -145,7 +162,7 @@ function paperCard(paper) {
       <div>
         <div class="tags">${tags}</div>
         <h3>${escapeHtml(paper.title)}</h3>
-        <div class="paper-meta">${escapeHtml(paper.authors)} · ${escapeHtml(paper.venue)} · ${escapeHtml(paper.year)}</div>
+        <div class="paper-meta">${escapeHtml(paper.authors)} · ${escapeHtml(paper.venue)} · ${escapeHtml(paper.year)}${escapeHtml(citationLabel(paper))}</div>
       </div>
     </div>
 
@@ -298,7 +315,7 @@ function wireEvents() {
       stage: "",
       year: "",
       codeOnly: false,
-      sortBy: "priority",
+      sortBy: "citations",
     };
     els.search.value = "";
     els.topicFilter.value = "";
@@ -306,7 +323,7 @@ function wireEvents() {
     els.stageFilter.value = "";
     els.yearFilter.value = "";
     els.codeOnly.checked = false;
-    els.sortBy.value = "priority";
+    els.sortBy.value = "citations";
     renderPapers();
   });
 }

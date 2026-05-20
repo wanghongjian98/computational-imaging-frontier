@@ -70,16 +70,9 @@ http://127.0.0.1:8000
 - `openQuestion`: 开放问题
 - `directionNote`: 该方向的前沿观察
 - `tags`: 标签数组
-- `scores`: `novelty`、`impact`、`reproducibility`、`fit` 四个 0-10 分
 - `code`: 是否有代码和代码链接
 - `url`: 论文链接
 - `updated`: 条目更新时间
-
-综合价值评分计算方式：
-
-```text
-0.30 * novelty + 0.25 * impact + 0.25 * fit + 0.20 * reproducibility
-```
 
 ## 推荐维护节奏
 

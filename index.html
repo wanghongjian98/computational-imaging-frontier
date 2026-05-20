@@ -6,7 +6,7 @@
     <title>计算成像前沿论文雷达</title>
     <meta
       name="description"
-      content="面向计算成像研究的论文筛选、摘要、评分和跟进队列。"
+      content="面向计算成像研究的论文筛选、摘要和跟进队列。"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -23,7 +23,6 @@
         <a href="#papers">论文库</a>
         <a href="#frontier">前沿路线</a>
         <a href="#queue">跟进队列</a>
-        <a href="#rubric">评分规则</a>
       </nav>
     </header>
 
@@ -34,7 +33,7 @@
           <h1>把计算成像论文整理成可检索、可比较、可跟进的研究地图</h1>
           <p>
             聚焦 lensless imaging、diffusion priors、neural fields、computational
-            microscopy、event cameras 和 raw computational photography。每篇论文记录问题、贡献、局限、复现成本和下一步价值。
+            microscopy、event cameras 和 raw computational photography。每篇论文记录问题、贡献、局限、复现状态和下一步跟进理由。
           </p>
           <div class="hero-actions">
             <a class="primary-link" href="#papers">浏览论文库</a>
@@ -53,7 +52,7 @@
           </div>
           <div>
             <strong id="highValueCount">0</strong>
-            <span>高优先级</span>
+            <span>重点跟进</span>
           </div>
           <div>
             <strong id="codeCount">0</strong>
@@ -113,15 +112,9 @@
             <select id="sortBy">
               <option value="priority">跟进优先级</option>
               <option value="year">年份最新</option>
-              <option value="reproducibility">复现友好</option>
-              <option value="impact">影响力</option>
+              <option value="code">代码可用</option>
+              <option value="status">阅读状态</option>
             </select>
-          </div>
-
-          <div class="filter-block">
-            <span class="label">最低价值评分</span>
-            <input id="scoreFilter" type="range" min="0" max="10" value="0" />
-            <output id="scoreOutput" for="scoreFilter">0</output>
           </div>
 
           <label class="checkbox">
@@ -150,7 +143,7 @@
             <p class="eyebrow">Reading Queue</p>
             <h2>优先跟进队列</h2>
           </div>
-          <span>按综合评分和复现价值自动生成</span>
+          <span>按优先级、年份和复现线索自动生成</span>
         </div>
         <div id="queueList" class="queue-list"></div>
       </section>
@@ -164,33 +157,6 @@
           <span>用于发现主题空白和可写综述方向</span>
         </div>
         <div id="topicMap" class="topic-map"></div>
-      </section>
-
-      <section id="rubric" class="band">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Scoring Rubric</p>
-            <h2>评分规则</h2>
-          </div>
-        </div>
-        <div class="rubric-grid">
-          <article>
-            <strong>Novelty 30%</strong>
-            <p>是否提出新的成像模型、硬件编码、先验或求解范式。</p>
-          </article>
-          <article>
-            <strong>Impact 25%</strong>
-            <p>是否改变研究路线，或成为后续论文反复引用的基线。</p>
-          </article>
-          <article>
-            <strong>Fit 25%</strong>
-            <p>是否贴近计算成像主线：物理模型、传感器、逆问题和可验证实验。</p>
-          </article>
-          <article>
-            <strong>Reproducibility 20%</strong>
-            <p>是否有代码、数据、标定细节和足够清楚的实验设置。</p>
-          </article>
-        </div>
       </section>
 
       <section id="workflow" class="band workflow">

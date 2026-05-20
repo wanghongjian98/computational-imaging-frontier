@@ -227,8 +227,7 @@ footer {
 }
 
 .frontier-lanes,
-.topic-map,
-.rubric-grid {
+.topic-map {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
@@ -236,7 +235,6 @@ footer {
 
 .frontier-card,
 .topic-node,
-.rubric-grid article,
 .queue-item,
 .filters,
 .results {
@@ -247,8 +245,7 @@ footer {
 }
 
 .frontier-card,
-.topic-node,
-.rubric-grid article {
+.topic-node {
   min-height: 150px;
   padding: 16px;
 }
@@ -269,8 +266,7 @@ footer {
 
 .frontier-card p,
 .topic-node p,
-.queue-item p,
-.rubric-grid p {
+.queue-item p {
   margin: 0;
   color: var(--muted);
 }
@@ -323,15 +319,6 @@ select {
   font: inherit;
 }
 
-input[type="range"] {
-  padding: 0;
-}
-
-output {
-  color: var(--accent);
-  font-weight: 900;
-}
-
 .checkbox {
   display: flex;
   align-items: center;
@@ -380,19 +367,6 @@ output {
   font-size: 14px;
 }
 
-.score {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--soft);
-  color: var(--accent);
-  font-size: 24px;
-  font-weight: 900;
-}
-
 .insight {
   margin: 0;
   border-left: 4px solid var(--rust);
@@ -432,27 +406,6 @@ output {
   margin: 0;
   color: var(--muted);
   font-size: 14px;
-}
-
-.score-bars {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.score-bar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 8px;
-  align-items: center;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-meter {
-  width: 100%;
-  height: 8px;
 }
 
 .tags {
@@ -595,10 +548,8 @@ footer a {
 
   .frontier-lanes,
   .topic-map,
-  .rubric-grid,
   .summary-grid,
   .detail-grid,
-  .score-bars,
   .workflow ol {
     grid-template-columns: 1fr 1fr;
   }
@@ -617,10 +568,8 @@ footer a {
   .metrics,
   .frontier-lanes,
   .topic-map,
-  .rubric-grid,
   .summary-grid,
   .detail-grid,
-  .score-bars,
   .workflow ol {
     grid-template-columns: 1fr;
   }
@@ -640,11 +589,5 @@ footer a {
   .queue-item > strong {
     justify-self: start;
     grid-column: 2;
-  }
-
-  .score {
-    width: 54px;
-    height: 54px;
-    font-size: 20px;
   }
 }

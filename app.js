@@ -6,7 +6,6 @@ const state = {
     modality: "",
     stage: "",
     year: "",
-    minScore: 0,
     codeOnly: false,
     sortBy: "priority",
   },
@@ -18,8 +17,6 @@ const els = {
   modalityFilter: document.querySelector("#modalityFilter"),
   stageFilter: document.querySelector("#stageFilter"),
   yearFilter: document.querySelector("#yearFilter"),
-  scoreFilter: document.querySelector("#scoreFilter"),
-  scoreOutput: document.querySelector("#scoreOutput"),
   codeOnly: document.querySelector("#codeOnly"),
   sortBy: document.querySelector("#sortBy"),
   resetFilters: document.querySelector("#resetFilters"),
@@ -50,14 +47,6 @@ function uniqueSorted(items) {
   );
 }
 
-function paperScore(paper) {
-  const novelty = Number(paper.scores?.novelty ?? 0);
-  const reproducibility = Number(paper.scores?.reproducibility ?? 0);
-  const impact = Number(paper.scores?.impact ?? 0);
-  const fit = Number(paper.scores?.fit ?? 0);
-  return Math.round((0.3 * novelty + 0.25 * impact + 0.25 * fit + 0.2 * reproducibility) * 10) / 10;
-}
-
 function fillSelect(select, values) {
   const first = select.querySelector("option");
   select.replaceChildren(first);
@@ -83,8 +72,11 @@ function hasCode(paper) {
   return Boolean(paper.code?.available && paper.code?.url);
 }
 
+function priorityRank(paper) {
+  return { High: 3, Medium: 2, Low: 1 }[paper.priority] ?? 0;
+}
+
 function matchesPaper(paper) {
-  const score = paperScore(paper);
   const haystack = [
     paper.title,
     paper.authors,
@@ -111,46 +103,26 @@ function matchesPaper(paper) {
     (!state.filters.modality || paper.modality === state.filters.modality) &&
     (!state.filters.stage || paper.status === state.filters.stage) &&
     (!state.filters.year || String(paper.year) === state.filters.year) &&
-    (!state.filters.codeOnly || hasCode(paper)) &&
-    score >= state.filters.minScore
+    (!state.filters.codeOnly || hasCode(paper))
   );
 }
 
 function sortPapers(papers) {
   const key = state.filters.sortBy;
   return [...papers].sort((a, b) => {
-    if (key === "year") return b.year - a.year || paperScore(b) - paperScore(a);
-    if (key === "reproducibility") {
-      return (b.scores?.reproducibility ?? 0) - (a.scores?.reproducibility ?? 0);
+    if (key === "year") return b.year - a.year || priorityRank(b) - priorityRank(a);
+    if (key === "code") {
+      return Number(hasCode(b)) - Number(hasCode(a)) || b.year - a.year;
     }
-    if (key === "impact") return (b.scores?.impact ?? 0) - (a.scores?.impact ?? 0);
-    return paperScore(b) - paperScore(a);
+    if (key === "status") {
+      return String(a.status ?? "").localeCompare(String(b.status ?? ""), "zh-Hans-CN") || b.year - a.year;
+    }
+    return priorityRank(b) - priorityRank(a) || b.year - a.year;
   });
 }
 
 function badge(text, tone = "") {
   return `<span class="tag ${tone}">${escapeHtml(text)}</span>`;
-}
-
-function scoreBars(paper) {
-  const scores = [
-    ["Novelty", paper.scores?.novelty ?? 0],
-    ["Impact", paper.scores?.impact ?? 0],
-    ["Fit", paper.scores?.fit ?? 0],
-    ["Repro", paper.scores?.reproducibility ?? 0],
-  ];
-
-  return scores
-    .map(
-      ([label, value]) => `
-        <div class="score-bar">
-          <span>${label}</span>
-          <meter min="0" max="10" value="${Number(value)}"></meter>
-          <strong>${Number(value)}</strong>
-        </div>
-      `,
-    )
-    .join("");
 }
 
 function paperCard(paper) {
@@ -175,7 +147,6 @@ function paperCard(paper) {
         <h3>${escapeHtml(paper.title)}</h3>
         <div class="paper-meta">${escapeHtml(paper.authors)} · ${escapeHtml(paper.venue)} · ${escapeHtml(paper.year)}</div>
       </div>
-      <div class="score" title="综合价值评分">${paperScore(paper)}</div>
     </div>
 
     <p class="insight">${escapeHtml(paper.insight ?? paper.contribution)}</p>
@@ -201,9 +172,6 @@ function paperCard(paper) {
         <p>${escapeHtml(paper.whyFollow ?? paper.directionNote)}</p>
       </div>
     </div>
-
-    <div class="score-bars">${scoreBars(paper)}</div>
-
     <div class="paper-actions">
       <span>${escapeHtml(paper.topic)} · ${escapeHtml(paper.modality)}</span>
       <div>${paperLink}${codeLink}</div>
@@ -223,7 +191,7 @@ function renderStats() {
   const dates = uniqueSorted(state.papers.map((paper) => paper.updated)).sort();
   els.paperCount.textContent = state.papers.length;
   els.topicCount.textContent = topics.length;
-  els.highValueCount.textContent = state.papers.filter((paper) => paperScore(paper) >= 8).length;
+  els.highValueCount.textContent = state.papers.filter((paper) => paper.priority === "High").length;
   els.codeCount.textContent = state.papers.filter(hasCode).length;
   els.lastUpdated.textContent = dates.length ? `Last updated: ${dates.at(-1)}` : "更新中";
 }
@@ -265,7 +233,7 @@ function renderTopicMap() {
     node.innerHTML = `
       <h3>${escapeHtml(topic)}</h3>
       <p>${escapeHtml(topPaper?.directionNote ?? "补充该方向的核心问题、代表方法和开放挑战。")}</p>
-      <span>${papers.length} 篇论文 · 最高分 ${paperScore(topPaper)}</span>
+      <span>${papers.length} 篇论文 · 重点跟进 ${papers.filter((paper) => paper.priority === "High").length}</span>
     `;
     return node;
   });
@@ -274,7 +242,7 @@ function renderTopicMap() {
 
 function renderQueue() {
   const queue = sortPapers(state.papers)
-    .filter((paper) => paper.priority === "High" || paperScore(paper) >= 8)
+    .filter((paper) => paper.priority === "High")
     .slice(0, 5)
     .map((paper, index) => {
       const item = document.createElement("article");
@@ -285,7 +253,7 @@ function renderQueue() {
           <h3>${escapeHtml(paper.title)}</h3>
           <p>${escapeHtml(paper.whyFollow ?? paper.insight ?? paper.contribution)}</p>
         </div>
-        <strong>${paperScore(paper)}</strong>
+        <strong>${escapeHtml(paper.priority ?? "High")}</strong>
       `;
       return item;
     });
@@ -314,11 +282,6 @@ function wireEvents() {
     state.filters.year = event.target.value;
     renderPapers();
   });
-  els.scoreFilter.addEventListener("input", (event) => {
-    state.filters.minScore = Number(event.target.value);
-    els.scoreOutput.value = event.target.value;
-    renderPapers();
-  });
   els.codeOnly.addEventListener("change", (event) => {
     state.filters.codeOnly = event.target.checked;
     renderPapers();
@@ -334,7 +297,6 @@ function wireEvents() {
       modality: "",
       stage: "",
       year: "",
-      minScore: 0,
       codeOnly: false,
       sortBy: "priority",
     };
@@ -343,8 +305,6 @@ function wireEvents() {
     els.modalityFilter.value = "";
     els.stageFilter.value = "";
     els.yearFilter.value = "";
-    els.scoreFilter.value = "0";
-    els.scoreOutput.value = "0";
     els.codeOnly.checked = false;
     els.sortBy.value = "priority";
     renderPapers();

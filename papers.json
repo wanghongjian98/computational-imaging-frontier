@@ -19,9 +19,15 @@
     "whyFollow": "适合作为 lensless imaging 方向的硬件-算法联合设计入口。",
     "openQuestion": "如何减少标定依赖，并让系统在动态场景和复杂深度范围内稳定工作。",
     "directionNote": "关注光学编码、PSF 标定、可制造性和端到端重建。",
-    "tags": ["lensless", "3D", "hardware-software co-design"],
-    "scores": { "novelty": 8, "impact": 8, "reproducibility": 6, "fit": 8 },
-    "code": { "available": true, "url": "https://github.com/Waller-Lab/DiffuserCam" },
+    "tags": [
+      "lensless",
+      "3D",
+      "hardware-software co-design"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/Waller-Lab/DiffuserCam"
+    },
     "url": "https://opg.optica.org/optica/fulltext.cfm?uri=optica-5-1-1&id=380522",
     "updated": "2026-05-20"
   },
@@ -45,9 +51,15 @@
     "whyFollow": "后续稀疏视角、动态场景、物理成像和显微/医学三维重建都绕不开这条线。",
     "openQuestion": "如何把真实成像噪声、曝光、散射和传感器响应纳入神经场训练。",
     "directionNote": "关注稀疏视角、动态场景、物理成像模型和可编辑三维表示。",
-    "tags": ["neural fields", "inverse rendering", "3D"],
-    "scores": { "novelty": 9, "impact": 10, "reproducibility": 8, "fit": 8 },
-    "code": { "available": true, "url": "https://github.com/bmild/nerf" },
+    "tags": [
+      "neural fields",
+      "inverse rendering",
+      "3D"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/bmild/nerf"
+    },
     "url": "https://www.matthewtancik.com/nerf",
     "updated": "2026-05-20"
   },
@@ -71,9 +83,15 @@
     "whyFollow": "它很可能成为三维计算成像原型系统的实时显示和评估层。",
     "openQuestion": "如何把低光、散射、显微、事件流等非标准观测纳入 Gaussian 优化。",
     "directionNote": "关注实时三维表示、可微渲染、动态场景和物理成像观测。",
-    "tags": ["3DGS", "real-time rendering", "neural rendering"],
-    "scores": { "novelty": 8, "impact": 10, "reproducibility": 8, "fit": 7 },
-    "code": { "available": true, "url": "https://github.com/graphdeco-inria/gaussian-splatting" },
+    "tags": [
+      "3DGS",
+      "real-time rendering",
+      "neural rendering"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/graphdeco-inria/gaussian-splatting"
+    },
     "url": "https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/",
     "updated": "2026-05-20"
   },
@@ -97,9 +115,15 @@
     "whyFollow": "理解 diffusion priors 前，最好先掌握这一代 denoiser prior 的思想。",
     "openQuestion": "深度去噪器不满足经典假设时，如何给出可信收敛和误差解释。",
     "directionNote": "关注收敛理论、扩散先验、非凸求解和物理一致性。",
-    "tags": ["PnP", "RED", "inverse problems"],
-    "scores": { "novelty": 8, "impact": 9, "reproducibility": 8, "fit": 9 },
-    "code": { "available": false, "url": "" },
+    "tags": [
+      "PnP",
+      "RED",
+      "inverse problems"
+    ],
+    "code": {
+      "available": false,
+      "url": ""
+    },
     "url": "https://epubs.siam.org/doi/10.1137/16M1102884",
     "updated": "2026-05-20"
   },
@@ -123,9 +147,15 @@
     "whyFollow": "这是当前计算成像与生成模型结合最活跃的方向之一。",
     "openQuestion": "如何在真实硬件噪声和未知退化下保证结果可信。",
     "directionNote": "关注可控采样、快速求解、可信不确定性和真实成像退化。",
-    "tags": ["diffusion", "posterior sampling", "Bayesian"],
-    "scores": { "novelty": 8, "impact": 9, "reproducibility": 7, "fit": 9 },
-    "code": { "available": true, "url": "https://github.com/DPS2022/diffusion-posterior-sampling" },
+    "tags": [
+      "diffusion",
+      "posterior sampling",
+      "Bayesian"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/DPS2022/diffusion-posterior-sampling"
+    },
     "url": "https://openreview.net/forum?id=OnD9zGAGT0k",
     "updated": "2026-05-20"
   },
@@ -149,9 +179,15 @@
     "whyFollow": "它是读懂 diffusion posterior sampling、DDRM 和后续扩散先验方法的基础。",
     "openQuestion": "如何把连续时间采样过程压缩到可用于实时成像系统的成本。",
     "directionNote": "关注 score prior、posterior sampling、fast samplers 和 uncertainty quantification。",
-    "tags": ["score model", "SDE", "generative prior"],
-    "scores": { "novelty": 9, "impact": 10, "reproducibility": 8, "fit": 7 },
-    "code": { "available": true, "url": "https://github.com/yang-song/score_sde" },
+    "tags": [
+      "score model",
+      "SDE",
+      "generative prior"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/yang-song/score_sde"
+    },
     "url": "https://openreview.net/forum?id=PxTIG12RRHS",
     "updated": "2026-05-20"
   },
@@ -175,9 +211,15 @@
     "whyFollow": "适合和 PnP、RED、diffusion prior 放在一起比较先验来源。",
     "openQuestion": "如何稳定控制过拟合，并把隐式先验扩展到视频、三维和物理传感器数据。",
     "directionNote": "关注无需训练数据的先验、早停机制和物理观测一致性。",
-    "tags": ["implicit prior", "untrained network", "inverse problems"],
-    "scores": { "novelty": 8, "impact": 9, "reproducibility": 8, "fit": 8 },
-    "code": { "available": true, "url": "https://github.com/DmitryUlyanov/deep-image-prior" },
+    "tags": [
+      "implicit prior",
+      "untrained network",
+      "inverse problems"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/DmitryUlyanov/deep-image-prior"
+    },
     "url": "https://dmitryulyanov.github.io/deep_image_prior",
     "updated": "2026-05-20"
   },
@@ -201,9 +243,15 @@
     "whyFollow": "它连接了硬件照明设计、相位恢复、显微成像和高通量生物应用。",
     "openQuestion": "如何处理厚样本、多散射和实时采集。",
     "directionNote": "关注高通量显微、相位恢复、系统校正和生物医学场景。",
-    "tags": ["ptychography", "phase retrieval", "microscopy"],
-    "scores": { "novelty": 9, "impact": 9, "reproducibility": 6, "fit": 8 },
-    "code": { "available": false, "url": "" },
+    "tags": [
+      "ptychography",
+      "phase retrieval",
+      "microscopy"
+    ],
+    "code": {
+      "available": false,
+      "url": ""
+    },
     "url": "https://www.nature.com/articles/nphoton.2013.187",
     "updated": "2026-05-20"
   },
@@ -227,9 +275,15 @@
     "whyFollow": "适合作为进入 neuromorphic computational imaging 的地图。",
     "openQuestion": "事件流如何和 frame、depth、IMU、spike sensor 等多模态观测稳定融合。",
     "directionNote": "关注异步传感、动态重建、低功耗视觉和神经形态硬件。",
-    "tags": ["event camera", "survey", "neuromorphic"],
-    "scores": { "novelty": 6, "impact": 8, "reproducibility": 9, "fit": 8 },
-    "code": { "available": false, "url": "" },
+    "tags": [
+      "event camera",
+      "survey",
+      "neuromorphic"
+    ],
+    "code": {
+      "available": false,
+      "url": ""
+    },
     "url": "https://ieeexplore.ieee.org/document/9138762",
     "updated": "2026-05-20"
   },
@@ -253,9 +307,15 @@
     "whyFollow": "适合关注非可见波段、低成本探测器和压缩采样硬件的研究。",
     "openQuestion": "如何在动态场景中减少测量次数并保持鲁棒重建。",
     "directionNote": "关注编码设计、快速采样、低光照和非可见波段成像。",
-    "tags": ["compressive sensing", "coded measurement", "hardware"],
-    "scores": { "novelty": 8, "impact": 8, "reproducibility": 7, "fit": 7 },
-    "code": { "available": false, "url": "" },
+    "tags": [
+      "compressive sensing",
+      "coded measurement",
+      "hardware"
+    ],
+    "code": {
+      "available": false,
+      "url": ""
+    },
     "url": "https://ieeexplore.ieee.org/document/4472247",
     "updated": "2026-05-20"
   },
@@ -279,9 +339,15 @@
     "whyFollow": "适合做 raw pipeline、噪声模型和端侧低光成像的基线。",
     "openQuestion": "如何处理运动、不同 ISP、不同传感器之间的泛化。",
     "directionNote": "关注 raw pipeline、噪声模型、真实数据集和端侧部署。",
-    "tags": ["raw", "low-light", "computational photography"],
-    "scores": { "novelty": 7, "impact": 8, "reproducibility": 8, "fit": 7 },
-    "code": { "available": true, "url": "https://github.com/cchen156/Learning-to-See-in-the-Dark" },
+    "tags": [
+      "raw",
+      "low-light",
+      "computational photography"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/cchen156/Learning-to-See-in-the-Dark"
+    },
     "url": "https://cchen156.github.io/SID.html",
     "updated": "2026-05-20"
   },
@@ -305,9 +371,15 @@
     "whyFollow": "对硬件闭环优化、显示成像和 differentiable optics 都有参考价值。",
     "openQuestion": "如何减少每台设备的重新标定成本，并推广到动态和宽视场显示。",
     "directionNote": "关注 differentiable optics、hardware-in-the-loop 和真实系统误差建模。",
-    "tags": ["holography", "camera-in-the-loop", "differentiable optics"],
-    "scores": { "novelty": 8, "impact": 8, "reproducibility": 6, "fit": 8 },
-    "code": { "available": true, "url": "https://github.com/computational-imaging/neural-holography" },
+    "tags": [
+      "holography",
+      "camera-in-the-loop",
+      "differentiable optics"
+    ],
+    "code": {
+      "available": true,
+      "url": "https://github.com/computational-imaging/neural-holography"
+    },
     "url": "https://www.computationalimaging.org/publications/neuralholography/",
     "updated": "2026-05-20"
   }

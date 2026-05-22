@@ -97,6 +97,12 @@ function matchesPaper(paper) {
     paper.task,
     paper.method,
     paper.hardware,
+    paper.abstract,
+    paper.summary,
+    paper.motivation,
+    paper.implementation,
+    paper.application,
+    paper.applicationDirection,
     paper.problem,
     paper.contribution,
     paper.limitation,
@@ -141,9 +147,19 @@ function badge(text, tone = "") {
   return `<span class="tag ${tone}">${escapeHtml(text)}</span>`;
 }
 
+function paperSummary(paper) {
+  return {
+    abstract: paper.abstract ?? paper.summary ?? paper.insight ?? paper.contribution,
+    motivation: paper.motivation ?? paper.problem,
+    implementation: paper.implementation ?? paper.contribution ?? paper.method,
+    application: paper.application ?? paper.applicationDirection ?? paper.directionNote ?? paper.whyFollow,
+  };
+}
+
 function paperCard(paper) {
   const card = document.createElement("article");
   card.className = "paper-card";
+  const summary = paperSummary(paper);
   const tags = [
     paper.topCitedRank ? badge(`Top #${paper.topCitedRank}`, "hot") : "",
     badge(paper.status ?? "未分类", "status"),
@@ -166,7 +182,10 @@ function paperCard(paper) {
       </div>
     </div>
 
-    <p class="insight">${escapeHtml(paper.insight ?? paper.contribution)}</p>
+    <div class="concise-abstract">
+      <strong>精炼 Abstract</strong>
+      <p>${escapeHtml(summary.abstract)}</p>
+    </div>
 
     <div class="detail-grid">
       <div><strong>任务</strong><span>${escapeHtml(paper.task ?? paper.problem)}</span></div>
@@ -177,16 +196,20 @@ function paperCard(paper) {
 
     <div class="summary-grid">
       <div>
-        <strong>问题</strong>
-        <p>${escapeHtml(paper.problem)}</p>
+        <strong>Motivation</strong>
+        <p>${escapeHtml(summary.motivation)}</p>
       </div>
       <div>
-        <strong>贡献</strong>
-        <p>${escapeHtml(paper.contribution)}</p>
+        <strong>主要实现</strong>
+        <p>${escapeHtml(summary.implementation)}</p>
       </div>
       <div>
-        <strong>为什么跟进</strong>
-        <p>${escapeHtml(paper.whyFollow ?? paper.directionNote)}</p>
+        <strong>应用方向</strong>
+        <p>${escapeHtml(summary.application)}</p>
+      </div>
+      <div>
+        <strong>局限/开放问题</strong>
+        <p>${escapeHtml(paper.openQuestion ?? paper.limitation ?? "待补")}</p>
       </div>
     </div>
     <div class="paper-actions">

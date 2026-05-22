@@ -275,28 +275,55 @@ function renderStats() {
 }
 
 function renderFrontierLanes() {
-  const topicMap = new Map();
-  state.papers.forEach((paper) => {
-    const group = topicMap.get(paper.topic) ?? [];
-    group.push(paper);
-    topicMap.set(paper.topic, group);
-  });
+  const lanes = [
+    {
+      title: "Lensless / Coded Imaging",
+      topics: ["Lensless Imaging", "Compressive Imaging"],
+      note: "关注光学编码、PSF 标定、压缩采样、可制造性和端到端重建。",
+    },
+    {
+      title: "Neural Radiance Fields",
+      topics: ["Neural Radiance Fields"],
+      note: "关注连续神经场、稀疏视角、动态场景、物理成像模型和可编辑三维表示。",
+    },
+    {
+      title: "3D Gaussian Splatting",
+      topics: ["3D Gaussian Splatting"],
+      note: "关注显式 Gaussian 表示、实时渲染、可微 splatting、动态场景和物理成像观测。",
+    },
+    {
+      title: "Diffusion Priors for Inverse Problems",
+      topics: ["Diffusion Priors", "Plug-and-Play Priors", "Implicit Priors"],
+      note: "关注生成先验、measurement consistency、后验采样、快速求解和可信不确定性。",
+    },
+    {
+      title: "Computational Microscopy",
+      topics: ["Computational Microscopy"],
+      note: "关注相位恢复、多角度照明、高通量显微、系统校正和厚样本建模。",
+    },
+    {
+      title: "Event / Computational Sensors",
+      topics: ["Event-based Imaging", "Low-light Computational Photography", "Computational Displays"],
+      note: "关注异步传感、raw pipeline、低光噪声模型、硬件闭环和真实系统误差。",
+    },
+  ];
 
-  const nodes = [...topicMap.entries()]
-    .map(([topic, papers]) => {
-      const sorted = sortPapers(papers);
-      const topPaper = sorted[0];
+  const nodes = lanes
+    .map((lane) => {
+      const papers = state.papers.filter((paper) => lane.topics.includes(paper.topic));
+      if (!papers.length) return null;
+      const topPaper = sortPapers(papers)[0];
       const node = document.createElement("article");
       node.className = "frontier-card";
       node.innerHTML = `
         <span>${papers.length} papers</span>
-        <h3>${escapeHtml(topic)}</h3>
-        <p>${escapeHtml(topPaper?.directionNote ?? "补充该方向的核心问题、代表方法和开放挑战。")}</p>
+        <h3>${escapeHtml(lane.title)}</h3>
+        <p>${escapeHtml(lane.note)}</p>
         <strong>代表条目：${escapeHtml(topPaper?.title ?? "待补")}</strong>
       `;
       return node;
     })
-    .slice(0, 6);
+    .filter(Boolean);
 
   els.frontierLanes.replaceChildren(...nodes);
 }

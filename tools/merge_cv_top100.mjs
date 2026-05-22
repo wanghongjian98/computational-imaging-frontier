@@ -137,6 +137,69 @@ function codeLink(paper) {
   return { available: true, url: match[0].replace(/[.,;]+$/, "") };
 }
 
+function splitSentences(text) {
+  return String(text ?? "")
+    .replace(/\s+/g, " ")
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+}
+
+function pickSentence(sentences, patterns, fallbackIndex = 0, excluded = new Set()) {
+  const available = sentences.filter((sentence) => !excluded.has(sentence));
+  return (
+    available.find((sentence) => patterns.some((pattern) => pattern.test(sentence))) ??
+    available[fallbackIndex] ??
+    ""
+  );
+}
+
+function concise(text, maxLength = 360) {
+  const normalized = String(text ?? "").replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) return normalized;
+  return `${normalized.slice(0, maxLength - 1).trim()}…`;
+}
+
+function abstractSummary(paper, config) {
+  const sentences = splitSentences(paper.abstract);
+  const motivation = pickSentence(
+    sentences,
+    [
+      /\b(challenge|challenging|difficulty|difficult|problem|bottleneck|limitation|expensive|costly)\b/i,
+      /\b(require|requires|required|need|needs|lack|lacks|limited|cannot|however|although|despite|arise from)\b/i,
+    ],
+    0,
+  );
+  const used = new Set(motivation ? [motivation] : []);
+  const implementation = pickSentence(
+    sentences,
+    [
+      /\b(to address|we propose|we introduce|we develop|we design|we show|this work proposes)\b/i,
+      /\b(method|framework|architecture|network|model|module|algorithm|loss|shifted|window|convolution|dataset)\b/i,
+    ],
+    Math.min(1, Math.max(sentences.length - 1, 0)),
+    used,
+  );
+  if (implementation) used.add(implementation);
+  const application = pickSentence(
+    sentences,
+    [
+      /\b(compatible with|broad range|can be used|is used|applications?|tasks? including|to evaluate|we evaluate|we demonstrate|experiments on|results show)\b/i,
+      /\b(detection|segmentation|classification|recognition|tracking|estimation|retrieval|generation|synthesis|reconstruction|benchmark|dataset)\b/i,
+      /\b(ImageNet|COCO|Cityscapes|ADE20K|KITTI|nuScenes)\b/i,
+    ],
+    sentences.length > 2 ? 2 : sentences.length - 1,
+    used,
+  );
+
+  return {
+    abstract: concise(paper.abstract || `${paper.title} targets ${config.task}.`),
+    motivation: concise(motivation || `该工作面向 ${config.task} 中的核心瓶颈。`),
+    implementation: concise(implementation || `该工作提出 ${paper.title}，用于 ${config.task}。`),
+    application: concise(application || `可用于 ${config.task} 及相关 ${config.modality} 场景。`),
+  };
+}
+
 function entryFromCandidate(paper) {
   const topic = inferTopic(paper);
   const config = topicConfig[topic] ?? topicConfig["General Computer Vision"];
@@ -144,6 +207,7 @@ function entryFromCandidate(paper) {
   const title = paper.title;
   const citationText = Number(paper.citationCount ?? 0).toLocaleString("en-US");
   const link = paper.pdf || paper.url || (paper.doi ? `https://doi.org/${paper.doi}` : "");
+  const summary = abstractSummary(paper, config);
 
   return {
     title,
@@ -158,8 +222,12 @@ function entryFromCandidate(paper) {
     method: config.method,
     hardware: "常规视觉数据与公开基准",
     dataset: "见论文实验设置",
-    problem: `面向${config.task}，该工作解决 ${topic} 方向中的代表性问题。`,
-    contribution: `提出或系统化了 ${title}，并在 ${paper.conference} 系列论文中形成高引用基线。`,
+    abstract: summary.abstract,
+    motivation: summary.motivation,
+    implementation: summary.implementation,
+    application: summary.application,
+    problem: summary.motivation,
+    contribution: summary.implementation,
     limitation: "高引用代表历史影响力，不等于当前最优；使用时需要结合后续工作、任务设定和数据偏差判断边界。",
     insight: `${title} 是近十年 CVPR/ECCV/ICCV 高引用代表作，适合作为 ${topic} 方向的入口论文。`,
     whyFollow: `Semantic Scholar 抓取时引用数约 ${citationText}；适合用于梳理近十年计算机视觉主线方法和基准演化。`,

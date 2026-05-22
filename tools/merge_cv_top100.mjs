@@ -193,7 +193,7 @@ function abstractSummary(paper, config) {
   );
 
   return {
-    abstract: concise(paper.abstract || `${paper.title} targets ${config.task}.`),
+    abstract: String(paper.abstract || `${paper.title} targets ${config.task}.`).replace(/\s+/g, " ").trim(),
     motivation: concise(motivation || `该工作面向 ${config.task} 中的核心瓶颈。`),
     implementation: concise(implementation || `该工作提出 ${paper.title}，用于 ${config.task}。`),
     application: concise(application || `可用于 ${config.task} 及相关 ${config.modality} 场景。`),

@@ -375,24 +375,31 @@ select {
 }
 
 .insight,
-.concise-abstract {
+.paper-text-block {
   margin: 0;
   border-left: 4px solid var(--rust);
   padding: 10px 12px;
   background: #fbf4ee;
   color: #4b3326;
-  font-weight: 700;
 }
 
-.concise-abstract strong {
+.paper-text-block.conclusion {
+  border-left-color: var(--accent);
+  background: #edf6f5;
+  color: var(--accent-dark);
+}
+
+.paper-text-block strong {
   display: block;
   margin-bottom: 4px;
   font-size: 13px;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
-.concise-abstract p {
+.paper-text-block p {
   margin: 0;
+  font-weight: 650;
 }
 
 .summary-grid,

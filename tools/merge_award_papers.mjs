@@ -148,7 +148,7 @@ function summarize(paper, title) {
   if (implementation) used.add(implementation);
   const application = pickSentence(sentences, [/\b(evaluate|experiments|tasks?|applications?|benchmark|dataset|ImageNet|COCO|KITTI|ADE20K|object|scene|video|image)\b/i], 2, used);
   return {
-    abstract: concise(paper.abstract || `${title} is an award-winning computer vision paper.`),
+    abstract: String(paper.abstract || `${title} is an award-winning computer vision paper.`).replace(/\s+/g, " ").trim(),
     motivation: concise(motivation || `${title} targets a central problem recognized by the conference awards committee.`),
     implementation: concise(implementation || `${title} introduces a method or system selected as award-winning work.`),
     application: concise(application || `${title} is relevant to its conference track and downstream computer vision applications.`),

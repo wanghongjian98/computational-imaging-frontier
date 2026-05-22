@@ -158,9 +158,14 @@ function awardBadges(paper) {
 function paperSummary(paper) {
   return {
     abstract: paper.abstract ?? paper.summary ?? paper.insight ?? paper.contribution,
-    motivation: paper.motivation ?? paper.problem,
-    implementation: paper.implementation ?? paper.contribution ?? paper.method,
-    application: paper.application ?? paper.applicationDirection ?? paper.directionNote ?? paper.whyFollow,
+    conclusion:
+      paper.conclusion ??
+      paper.takeaway ??
+      paper.finalTakeaway ??
+      paper.directionNote ??
+      paper.whyFollow ??
+      paper.limitation ??
+      "",
   };
 }
 
@@ -191,8 +196,8 @@ function paperCard(paper) {
       </div>
     </div>
 
-    <div class="concise-abstract">
-      <strong>精炼 Abstract</strong>
+    <div class="paper-text-block">
+      <strong>Abstract</strong>
       <p>${escapeHtml(summary.abstract)}</p>
     </div>
 
@@ -203,24 +208,12 @@ function paperCard(paper) {
       <div><strong>开放问题</strong><span>${escapeHtml(paper.openQuestion ?? paper.limitation)}</span></div>
     </div>
 
-    <div class="summary-grid">
-      <div>
-        <strong>Motivation</strong>
-        <p>${escapeHtml(summary.motivation)}</p>
+    ${summary.conclusion ? `
+      <div class="paper-text-block conclusion">
+        <strong>Conclusion / Takeaway</strong>
+        <p>${escapeHtml(summary.conclusion)}</p>
       </div>
-      <div>
-        <strong>主要实现</strong>
-        <p>${escapeHtml(summary.implementation)}</p>
-      </div>
-      <div>
-        <strong>应用方向</strong>
-        <p>${escapeHtml(summary.application)}</p>
-      </div>
-      <div>
-        <strong>局限/开放问题</strong>
-        <p>${escapeHtml(paper.openQuestion ?? paper.limitation ?? "待补")}</p>
-      </div>
-    </div>
+    ` : ""}
     <div class="paper-actions">
       <span>${escapeHtml(paper.topic)} · ${escapeHtml(paper.modality)}</span>
       <div>${paperLink}${codeLink}</div>

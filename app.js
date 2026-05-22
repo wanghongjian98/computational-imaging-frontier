@@ -30,6 +30,8 @@ const els = {
   queueList: document.querySelector("#queueList"),
   frontierLanes: document.querySelector("#frontierLanes"),
   lastUpdated: document.querySelector("#lastUpdated"),
+  awardList: document.querySelector("#awardList"),
+  awardCount: document.querySelector("#awardCount"),
 };
 
 function escapeHtml(value) {
@@ -147,6 +149,12 @@ function badge(text, tone = "") {
   return `<span class="tag ${tone}">${escapeHtml(text)}</span>`;
 }
 
+function awardBadges(paper) {
+  return (paper.awards ?? [])
+    .map((award) => badge(`${award.conference} ${award.year} ${award.award}`, "award"))
+    .join("");
+}
+
 function paperSummary(paper) {
   return {
     abstract: paper.abstract ?? paper.summary ?? paper.insight ?? paper.contribution,
@@ -162,6 +170,7 @@ function paperCard(paper) {
   const summary = paperSummary(paper);
   const tags = [
     paper.topCitedRank ? badge(`Top #${paper.topCitedRank}`, "hot") : "",
+    awardBadges(paper),
     badge(paper.status ?? "未分类", "status"),
     badge(paper.priority ?? "Medium", paper.priority === "High" ? "hot" : ""),
     ...(paper.tags ?? []).map((tag) => badge(tag)),
@@ -218,6 +227,35 @@ function paperCard(paper) {
     </div>
   `;
   return card;
+}
+
+function renderAwards() {
+  const awardPapers = state.papers
+    .filter((paper) => paper.awards?.length)
+    .sort((a, b) => {
+      const awardA = a.awards[0];
+      const awardB = b.awards[0];
+      return awardB.year - awardA.year || String(awardA.conference).localeCompare(awardB.conference);
+    });
+
+  els.awardCount.textContent = `${awardPapers.length} 篇`;
+  const nodes = awardPapers.map((paper) => {
+    const node = document.createElement("article");
+    node.className = "award-card";
+    const awards = (paper.awards ?? [])
+      .map((award) => `${award.conference} ${award.year} · ${award.award}`)
+      .join(" / ");
+    node.innerHTML = `
+      <div>
+        <span>${escapeHtml(awards)}</span>
+        <h3>${escapeHtml(paper.title)}</h3>
+        <p>${escapeHtml(paper.authors)}</p>
+      </div>
+      <strong>${escapeHtml(paper.topic)}</strong>
+    `;
+    return node;
+  });
+  els.awardList.replaceChildren(...nodes);
 }
 
 function renderPapers() {
@@ -357,6 +395,7 @@ async function init() {
   state.papers = await response.json();
   hydrateFilters();
   renderStats();
+  renderAwards();
   renderFrontierLanes();
   renderQueue();
   renderTopicMap();

@@ -8,7 +8,7 @@
       name="description"
       content="面向计算成像研究的论文筛选、摘要和跟进队列。"
     />
-    <link rel="stylesheet" href="styles.css?v=summary-v2" />
+    <link rel="stylesheet" href="styles.css?v=awards-v1" />
   </head>
   <body>
     <header class="topbar">
@@ -20,6 +20,7 @@
         </div>
       </a>
       <nav aria-label="主要导航">
+        <a href="#awards">获奖合集</a>
         <a href="#papers">论文库</a>
         <a href="#frontier">前沿路线</a>
         <a href="#queue">跟进队列</a>
@@ -59,6 +60,17 @@
             <span>可复现代码</span>
           </div>
         </div>
+      </section>
+
+      <section id="awards" class="band">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Award Collection</p>
+            <h2>CV 顶会 Best Paper 合集</h2>
+          </div>
+          <span id="awardCount">0 篇</span>
+        </div>
+        <div id="awardList" class="award-list"></div>
       </section>
 
       <section id="frontier" class="frontier band">
@@ -192,6 +204,6 @@
       <p>Maintained as a public research notebook. 数据文件：<a href="papers.json">papers.json</a></p>
     </footer>
 
-    <script src="app.js?v=summary-v2"></script>
+    <script src="app.js?v=awards-v1"></script>
   </body>
 </html>

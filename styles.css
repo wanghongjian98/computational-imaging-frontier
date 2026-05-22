@@ -227,7 +227,8 @@ footer {
 }
 
 .frontier-lanes,
-.topic-map {
+.topic-map,
+.award-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
@@ -235,6 +236,7 @@ footer {
 
 .frontier-card,
 .topic-node,
+.award-card,
 .queue-item,
 .filters,
 .results {
@@ -245,12 +247,14 @@ footer {
 }
 
 .frontier-card,
-.topic-node {
+.topic-node,
+.award-card {
   min-height: 150px;
   padding: 16px;
 }
 
-.frontier-card span {
+.frontier-card span,
+.award-card span {
   color: var(--rust);
   font-size: 12px;
   font-weight: 900;
@@ -259,6 +263,7 @@ footer {
 
 .frontier-card h3,
 .topic-node h3,
+.award-card h3,
 .queue-item h3 {
   margin: 6px 0 8px;
   line-height: 1.3;
@@ -266,13 +271,15 @@ footer {
 
 .frontier-card p,
 .topic-node p,
+.award-card p,
 .queue-item p {
   margin: 0;
   color: var(--muted);
 }
 
 .frontier-card strong,
-.topic-node span {
+.topic-node span,
+.award-card strong {
   display: block;
   margin-top: 12px;
   color: var(--accent-dark);
@@ -441,6 +448,11 @@ select {
   color: var(--rust);
 }
 
+.tag.award {
+  background: #fff2c4;
+  color: #6a4a00;
+}
+
 .paper-actions {
   display: flex;
   align-items: center;
@@ -556,6 +568,7 @@ footer a {
 
   .frontier-lanes,
   .topic-map,
+  .award-list,
   .summary-grid,
   .detail-grid,
   .workflow ol {
@@ -576,6 +589,7 @@ footer a {
   .metrics,
   .frontier-lanes,
   .topic-map,
+  .award-list,
   .summary-grid,
   .detail-grid,
   .workflow ol {

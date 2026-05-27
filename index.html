@@ -8,7 +8,7 @@
       name="description"
       content="面向计算成像研究的论文筛选、摘要和跟进队列。"
     />
-    <link rel="stylesheet" href="styles.css?v=full-abstract-v1" />
+    <link rel="stylesheet" href="styles.css?v=read-state-v1" />
   </head>
   <body>
     <header class="topbar">
@@ -58,6 +58,10 @@
           <div>
             <strong id="codeCount">0</strong>
             <span>可复现代码</span>
+          </div>
+          <div>
+            <strong id="readCount">0</strong>
+            <span>已读条目</span>
           </div>
         </div>
       </section>
@@ -135,6 +139,11 @@
             只看有代码的论文
           </label>
 
+          <label class="checkbox">
+            <input id="unreadOnly" type="checkbox" />
+            只看未读论文
+          </label>
+
           <button id="resetFilters" type="button">重置筛选</button>
         </aside>
 
@@ -204,6 +213,6 @@
       <p>Maintained as a public research notebook. 数据文件：<a href="papers.json">papers.json</a></p>
     </footer>
 
-    <script src="app.js?v=full-abstract-v1"></script>
+    <script src="app.js?v=read-state-v1"></script>
   </body>
 </html>

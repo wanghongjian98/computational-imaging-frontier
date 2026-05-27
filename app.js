@@ -1,5 +1,8 @@
+const READ_STORAGE_KEY = "computational-imaging-frontier-read-v1";
+
 const state = {
   papers: [],
+  readKeys: new Set(),
   filters: {
     search: "",
     topic: "",
@@ -7,6 +10,7 @@ const state = {
     stage: "",
     year: "",
     codeOnly: false,
+    unreadOnly: false,
     sortBy: "citations",
   },
 };
@@ -18,6 +22,7 @@ const els = {
   stageFilter: document.querySelector("#stageFilter"),
   yearFilter: document.querySelector("#yearFilter"),
   codeOnly: document.querySelector("#codeOnly"),
+  unreadOnly: document.querySelector("#unreadOnly"),
   sortBy: document.querySelector("#sortBy"),
   resetFilters: document.querySelector("#resetFilters"),
   paperList: document.querySelector("#paperList"),
@@ -26,6 +31,7 @@ const els = {
   topicCount: document.querySelector("#topicCount"),
   highValueCount: document.querySelector("#highValueCount"),
   codeCount: document.querySelector("#codeCount"),
+  readCount: document.querySelector("#readCount"),
   topicMap: document.querySelector("#topicMap"),
   queueList: document.querySelector("#queueList"),
   frontierLanes: document.querySelector("#frontierLanes"),
@@ -33,6 +39,22 @@ const els = {
   awardList: document.querySelector("#awardList"),
   awardCount: document.querySelector("#awardCount"),
 };
+
+function loadReadKeys() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(READ_STORAGE_KEY) ?? "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveReadKeys() {
+  try {
+    localStorage.setItem(READ_STORAGE_KEY, JSON.stringify([...state.readKeys]));
+  } catch {
+    // Reading progress is a convenience feature; keep the UI usable if storage is blocked.
+  }
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -72,6 +94,22 @@ function hydrateFilters() {
 
 function hasCode(paper) {
   return Boolean(paper.code?.available && paper.code?.url);
+}
+
+function paperKey(paper) {
+  return [paper.title, paper.year, paper.venue]
+    .map((part) =>
+      String(part ?? "")
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, "-")
+        .replace(/^-|-$/g, ""),
+    )
+    .filter(Boolean)
+    .join("|");
+}
+
+function isRead(paper) {
+  return state.readKeys.has(paperKey(paper));
 }
 
 function priorityRank(paper) {
@@ -124,7 +162,8 @@ function matchesPaper(paper) {
     (!state.filters.modality || paper.modality === state.filters.modality) &&
     (!state.filters.stage || paper.status === state.filters.stage) &&
     (!state.filters.year || String(paper.year) === state.filters.year) &&
-    (!state.filters.codeOnly || hasCode(paper))
+    (!state.filters.codeOnly || hasCode(paper)) &&
+    (!state.filters.unreadOnly || !isRead(paper))
   );
 }
 
@@ -171,9 +210,11 @@ function paperSummary(paper) {
 
 function paperCard(paper) {
   const card = document.createElement("article");
-  card.className = "paper-card";
+  const read = isRead(paper);
+  card.className = `paper-card${read ? " read" : ""}`;
   const summary = paperSummary(paper);
   const tags = [
+    read ? badge("已读", "read") : "",
     paper.topCitedRank ? badge(`Top #${paper.topCitedRank}`, "hot") : "",
     awardBadges(paper),
     badge(paper.status ?? "未分类", "status"),
@@ -216,7 +257,12 @@ function paperCard(paper) {
     ` : ""}
     <div class="paper-actions">
       <span>${escapeHtml(paper.topic)} · ${escapeHtml(paper.modality)}</span>
-      <div>${paperLink}${codeLink}</div>
+      <div>
+        <button class="read-toggle" type="button" data-paper-key="${escapeHtml(paperKey(paper))}" aria-pressed="${read}">
+          ${read ? "取消已读" : "标记已读"}
+        </button>
+        ${paperLink}${codeLink}
+      </div>
     </div>
   `;
   return card;
@@ -264,6 +310,7 @@ function renderStats() {
   els.topicCount.textContent = topics.length;
   els.highValueCount.textContent = state.papers.filter((paper) => paper.priority === "High").length;
   els.codeCount.textContent = state.papers.filter(hasCode).length;
+  els.readCount.textContent = state.papers.filter(isRead).length;
   els.lastUpdated.textContent = dates.length ? `Last updated: ${dates.at(-1)}` : "更新中";
 }
 
@@ -384,6 +431,10 @@ function wireEvents() {
     state.filters.codeOnly = event.target.checked;
     renderPapers();
   });
+  els.unreadOnly.addEventListener("change", (event) => {
+    state.filters.unreadOnly = event.target.checked;
+    renderPapers();
+  });
   els.sortBy.addEventListener("change", (event) => {
     state.filters.sortBy = event.target.value;
     renderPapers();
@@ -396,6 +447,7 @@ function wireEvents() {
       stage: "",
       year: "",
       codeOnly: false,
+      unreadOnly: false,
       sortBy: "citations",
     };
     els.search.value = "";
@@ -404,12 +456,27 @@ function wireEvents() {
     els.stageFilter.value = "";
     els.yearFilter.value = "";
     els.codeOnly.checked = false;
+    els.unreadOnly.checked = false;
     els.sortBy.value = "citations";
+    renderPapers();
+  });
+  els.paperList.addEventListener("click", (event) => {
+    const button = event.target.closest(".read-toggle");
+    if (!button) return;
+    const key = button.dataset.paperKey;
+    if (state.readKeys.has(key)) {
+      state.readKeys.delete(key);
+    } else {
+      state.readKeys.add(key);
+    }
+    saveReadKeys();
+    renderStats();
     renderPapers();
   });
 }
 
 async function init() {
+  state.readKeys = loadReadKeys();
   const response = await fetch("papers.json", { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   state.papers = await response.json();
